@@ -22,6 +22,7 @@ var ActionList = map[string]action{
 	"create": action{"New ", " has been created.", "success"},
 	"edit":   action{"Edit ", " has been edited.", "success"},
 	"delete": action{"Delete ", " has been deleted.", "alert"},
+	"login":  action{"Login ", " logged in.", "info"},
 }
 
 func getUsernameFromToken(tokenString string) (string, error) {
