@@ -27,12 +27,14 @@ var ActionList = map[string]action{
 
 func getUsernameFromToken(tokenString string) (string, error) {
 	//Parse token to remove the bearer
-	parsedToken := strings.Split(tokenString, "Bearer ")[1]
+	if strings.Contains(tokenString, "Bearer ") {
+		tokenString = strings.Split(tokenString, "Bearer ")[1]
+	}
 
 	key, err := envy.MustGet("JWT_SECRET")
 
 	// Parse takes the token string and a function for looking up the key.
-	token, err := jwt.Parse(parsedToken, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(key), nil
 	})
 	if err != nil {
@@ -50,7 +52,10 @@ func getUsernameFromToken(tokenString string) (string, error) {
 //PostNewLog to the logging API, object is the model name to be used and name the object name itself (like a device name)
 func PostNewLog(token string, a action, object string, name string) error {
 	//url := "http://localhost:3002/api/v1/logs"
-	url, _ := envy.MustGet("LOGGING_API")
+	url, erro := envy.MustGet("LOGGING_API")
+	if erro != nil {
+		return erro
+	}
 
 	var logTitle = a.Title + strings.ToLower(object)
 	var logContent = object + " " + name + a.Verb
