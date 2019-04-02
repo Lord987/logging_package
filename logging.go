@@ -69,7 +69,10 @@ func PostNewLog(token string, a action, object string, name string) error {
 	jsonStr, _ := json.Marshal(values)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
-	req.Header.Set("Authorization", token)
+	if !strings.Contains(token, "Bearer ") {
+		req.Header.Add("Authorization", "Bearer "+token)
+	}
+	req.Header.Add("Authorization", token)
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
